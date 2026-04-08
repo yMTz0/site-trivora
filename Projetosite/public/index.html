@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduInclusiva Pro | Inteligência Pedagógica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ─── DESIGN TOKENS ─────────────────────────────── */
+        :root {
+            --bg:          #F0F4F8;
+            --surface:     #FFFFFF;
+            --surface-2:   #E8EDF5;
+            --surface-3:   #D8E2EE;
+
+            --ink:         #0E1825;
+            --ink-2:       #2C3E50;
+            --ink-3:       #5A6A7E;
+            --ink-4:       #6E849A;
+
+            --blue-1:      #1A4A7A;
+            --blue-2:      #2E6DB4;
+            --blue-3:      #6FA8DC;
+            --blue-4:      #A8C8EC;
+            --blue-5:      #D4E6F7;
+            --blue-6:      #EBF4FC;
+
+            --gray-1:      #1C2733;
+            --gray-2:      #2E3B4E;
+            --gray-3:      #6B7B8D;
+            --gray-4:      #A0AFBE;
+            --gray-5:      #CED7E0;
+            --gray-6:      #E4EAF0;
+
+            --white:       #FFFFFF;
+            --accent:      #3A7BD5;
+            --accent-glow: rgba(58, 123, 213, 0.18);
+
+            --amber:       #C8892A;
+            --amber-light: #F0D4A0;
+            --amber-wash:  #FAF0E0;
+
+            --success:     #2E7D5A;
+            --success-bg:  #E8F5EE;
+            --error:       #B03A3A;
+            --error-bg:    #FDF2F2;
+
+            --radius-sm:   0.75rem;
+            --radius-md:   1.25rem;
+            --radius-lg:   2rem;
+            --radius-xl:   2.5rem;
+
+            --shadow-sm:   0 2px 8px rgba(14,24,37,0.06);
+            --shadow-md:   0 8px 24px rgba(14,24,37,0.1);
+            --shadow-lg:   0 20px 60px rgba(14,24,37,0.14);
+            --shadow-xl:   0 32px 80px rgba(14,24,37,0.18);
+
+            --transition:  all 0.25s cubic-bezier(.22,1,.36,1);
+        }
+
+        /* ─── RESET & A11Y ──────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            overflow-x: hidden;
+        }
+
+        *:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+        input:focus-visible, button:focus-visible, select:focus-visible, textarea:focus-visible {
+            border-radius: inherit;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 1000; opacity: 0.15;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+        /* ─── NAVBAR ────────────────────────────────────── */
+        nav {
+            position: sticky; top: 0; z-index: 500;
+            background: rgba(240, 244, 248, 0.88);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            border-bottom: 1px solid var(--gray-5);
+            padding: 0 3rem;
+            height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; cursor: pointer; }
+        .nav-logo-mark {
+            width: 36px; height: 36px; background: linear-gradient(135deg, var(--blue-2), var(--blue-3));
+            border-radius: 10px; display: grid; place-items: center; box-shadow: 0 4px 12px var(--accent-glow);
+        }
+        .nav-logo-mark svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-logo-text { font-family: 'DM Serif Display', serif; font-size: 1.25rem; color: var(--ink); letter-spacing: -0.02em; }
+        .nav-logo-text span { color: var(--blue-2); }
+
+        .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+        #auth-nav { display: flex; gap: 0.75rem; align-items: center; }
+        #user-nav { display: none; align-items: center; gap: 0.75rem; }
+
+        .btn-ghost {
+            background: transparent; border: 1px solid transparent; color: var(--ink-3);
+            font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
+            cursor: pointer; padding: 0.5rem 1rem; border-radius: 100px; transition: var(--transition);
+        }
+        .btn-ghost:hover { color: var(--ink); background: var(--gray-6); border-color: var(--gray-5); }
+
+        .btn-primary {
+            background: var(--accent); color: white; border: none;
+            font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 700;
+            cursor: pointer; padding: 0.55rem 1.4rem; border-radius: 100px;
+            transition: var(--transition); box-shadow: 0 4px 14px var(--accent-glow);
+        }
+        .btn-primary:hover { background: var(--blue-1); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(58,123,213,0.3); }
+
+        .nav-user-info { text-align: right; }
+        #nav-user-name { font-size: 0.875rem; font-weight: 700; color: var(--ink); }
+        #nav-user-plan {
+            font-size: 0.65rem; font-weight: 700; background: var(--amber-wash); color: var(--amber);
+            padding: 0.15rem 0.55rem; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.08em; border: 1px solid var(--amber-light);
+        }
+        #nav-user-plan.free { background: var(--blue-6); color: var(--blue-2); border-color: var(--blue-5); }
+
+        /* Avatar / Menu Dropdown */
+        .nav-avatar-wrap { position: relative; }
+        .nav-avatar {
+            width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--blue-2), var(--blue-3));
+            border: 2px solid var(--blue-5); color: white; font-size: 0.8rem; font-weight: 700;
+            cursor: pointer; display: grid; place-items: center; transition: var(--transition); font-family: 'DM Sans', sans-serif;
+        }
+        .nav-avatar:hover { border-color: var(--blue-3); transform: scale(1.05); }
+
+        .nav-dropdown {
+            position: absolute; top: calc(100% + 10px); right: 0; background: var(--white);
+            border: 1px solid var(--gray-5); border-radius: var(--radius-md); padding: 0.5rem;
+            min-width: 200px; box-shadow: var(--shadow-lg); display: none; z-index: 600;
+            animation: dropIn 0.2s cubic-bezier(.22,1,.36,1) both;
+        }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-dropdown.open { display: block; }
+
+        .dropdown-header { padding: 0.6rem 0.75rem 0.75rem; border-bottom: 1px solid var(--gray-6); margin-bottom: 0.4rem; }
+        .dropdown-name { font-size: 0.875rem; font-weight: 700; color: var(--ink); }
+        .dropdown-email { font-size: 0.72rem; color: var(--ink-4); margin-top: 0.15rem; }
+
+        .dropdown-item {
+            width: 100%; display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.6rem 0.75rem; border: none; background: transparent; cursor: pointer;
+            font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600; color: var(--ink-3);
+            border-radius: var(--radius-sm); transition: var(--transition); text-align: left;
+        }
+        .dropdown-item:hover { background: var(--gray-6); color: var(--ink); }
+        .dropdown-item.danger:hover { background: var(--error-bg); color: var(--error); }
+        .dropdown-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+        /* ─── HERO ──────────────────────────────────────── */
+        .hero { padding: 5rem 2rem 3rem; text-align: center; position: relative; }
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--blue-6) 0%, transparent 70%); pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            position: relative; display: inline-flex; align-items: center; gap: 0.5rem;
+            background: var(--white); border: 1px solid var(--blue-5); border-radius: 100px;
+            padding: 0.35rem 1rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--blue-2); margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm); animation: fadeUp 0.6s ease both;
+        }
+        .eyebrow-dot { width: 6px; height: 6px; background: var(--blue-3); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+
+        .hero-title {
+            position: relative; font-family: 'DM Serif Display', serif; font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 400; line-height: 1.05; letter-spacing: -0.025em; color: var(--ink); animation: fadeUp 0.6s 0.1s ease both;
+        }
+        .hero-title em { font-style: italic; color: var(--blue-2); }
+
+        .hero-sub {
+            position: relative; margin-top: 1.25rem; font-size: 1.05rem; color: var(--ink-3);
+            max-width: 480px; margin-left: auto; margin-right: auto; font-weight: 400; line-height: 1.65; animation: fadeUp 0.6s 0.2s ease both;
+        }
+
+        .hero-search {
+            position: relative; max-width: 420px; margin: 2rem auto 0;
+            animation: fadeUp 0.6s 0.3s ease both;
+        }
+        .hero-search input {
+            width: 100%; padding: 1rem 1.5rem 1rem 3.2rem;
+            border-radius: 100px; border: 1.5px solid var(--blue-4);
+            font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--ink);
+            box-shadow: var(--shadow-sm); transition: var(--transition); background: var(--white);
+        }
+        .hero-search input::placeholder { color: var(--ink-4); }
+        .hero-search input:focus { border-color: var(--accent); box-shadow: 0 4px 16px var(--accent-glow); outline: none; }
+        .hero-search svg {
+            position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%);
+            width: 20px; height: 20px; stroke: var(--blue-3); fill: none; stroke-width: 2;
+        }
+
+        .stats-strip {
+            position: relative; display: flex; justify-content: center; gap: 3rem;
+            margin-top: 3rem; animation: fadeUp 0.6s 0.4s ease both;
+        }
+        .stat-item { text-align: center; }
+        .stat-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: var(--ink); letter-spacing: -0.02em; }
+        .stat-label { font-size: 0.72rem; color: var(--ink-4); font-weight: 600; margin-top: 0.1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+        .stat-divider { width: 1px; background: var(--gray-5); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ─── FUNNEL ────────────────────────────────────── */
+        .funnel-wrap { padding: 0 2rem 3rem; position: relative; }
+        .funnel-panel {
+            max-width: 920px; margin: 0 auto; background: var(--white);
+            border: 1px solid var(--gray-5); border-radius: var(--radius-xl);
+            padding: 2.5rem 3rem; box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.5);
+        }
+
+        .progress-wrap { margin-bottom: 2.25rem; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--ink-4); font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.5rem; }
+        .progress-track { display: flex; gap: 5px; height: 3px; }
+        .progress-seg { flex: 1; height: 3px; border-radius: 100px; background: var(--gray-6); transition: background 0.4s ease; }
+        .progress-seg.active { background: var(--accent); }
+
+        .filter-step { display: none; }
+        .filter-step.active { display: flex; flex-direction: column; gap: 1.75rem; animation: stepIn 0.4s cubic-bezier(.22,1,.36,1) both; }
+        @keyframes stepIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+
+        .step-label { font-family: 'DM Serif Display', serif; font-size: clamp(1.5rem, 3.5vw, 2.1rem); font-weight: 400; line-height: 1.2; color: var(--ink); }
+        .step-label span { color: var(--blue-2); font-style: italic; }
+
+        .choice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.875rem; }
+        .choice-grid.cols-3 { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+
+        .btn-choice {
+            background: var(--bg); border: 1.5px solid var(--gray-5); border-radius: var(--radius-md);
+            padding: 1.35rem 1.25rem; text-align: left; cursor: pointer; transition: var(--transition);
+            display: flex; flex-direction: column; gap: 0.65rem; color: var(--ink); position: relative; overflow: hidden;
+        }
+        .btn-choice::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--blue-6), transparent); opacity: 0; transition: opacity 0.3s; }
+        .btn-choice:hover { border-color: var(--blue-3); background: var(--white); transform: translateY(-3px); box-shadow: var(--shadow-md), 0 0 0 3px var(--blue-6); }
+        .btn-choice:hover::before { opacity: 1; }
+        .btn-choice.selected { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px var(--blue-6), var(--shadow-sm); }
+
+        .choice-icon { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; }
+        .ci-blue   { background: var(--blue-5); color: var(--blue-2); }
+        .ci-slate  { background: var(--gray-6); color: var(--gray-3); }
+        .ci-teal   { background: #D8F0ED; color: #2E7D72; }
+        .ci-amber  { background: var(--amber-wash); color: var(--amber); }
+        .ci-indigo { background: #E8E4F8; color: #5B4FC0; }
+        .ci-rose   { background: #FAE8E8; color: #B04040; }
+
+        .choice-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .choice-name { font-size: 0.9rem; font-weight: 700; color: var(--ink); position: relative; }
+        .choice-desc { font-size: 0.73rem; color: var(--ink-3); line-height: 1.5; position: relative; }
+
+        .lvl-badge { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 100px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+        .lvl-1 { background: var(--blue-5); color: var(--blue-2); border: 1px solid var(--blue-4); }
+        .lvl-2 { background: var(--amber-wash); color: var(--amber); border: 1px solid var(--amber-light); }
+        .lvl-3 { background: #FAE8E8; color: #B04040; border: 1px solid #F0BFBF; }
+
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 0.4rem; background: none; border: none;
+            color: var(--ink-4); font-size: 0.75rem; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer;
+            transition: color 0.2s; letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .btn-back:hover { color: var(--accent); }
+        .btn-back svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        .final-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 600px) { .final-row { grid-template-columns: 1fr; } }
+
+        .final-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-4); margin-bottom: 0.6rem; }
+
+        .select-styled {
+            width: 100%; padding: 0.875rem 1.1rem; background: var(--bg); border: 1.5px solid var(--gray-5);
+            border-radius: var(--radius-sm); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
+            cursor: pointer; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%238FA3B8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 1rem center; transition: border-color 0.2s;
+        }
+        .select-styled:focus { border-color: var(--accent); outline: none; }
+        option { background: var(--white); }
+
+        .tag-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .tag-btn {
+            padding: 0.45rem 1rem; border: 1.5px solid var(--gray-5); border-radius: 100px;
+            background: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 700;
+            cursor: pointer; color: var(--ink-3); transition: var(--transition);
+        }
+        .tag-btn:hover { border-color: var(--blue-3); color: var(--ink); }
+        .tag-btn.active { background: var(--blue-5); border-color: var(--blue-3); color: var(--blue-1); }
+
+        .btn-apply {
+            display: inline-flex; align-items: center; gap: 0.6rem; background: var(--ink); color: white;
+            font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; border: none;
+            padding: 1rem 2rem; border-radius: 100px; cursor: pointer; transition: var(--transition);
+        }
+        .btn-apply:hover { background: var(--blue-1); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(14,24,37,0.25); }
+        .btn-apply svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ─── MATERIALS ─────────────────────────────────── */
+        .materials-section { padding: 2rem 2rem 4rem; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 1.75rem; flex-wrap: wrap; gap: 1rem; }
+        .section-title { font-family: 'DM Serif Display', serif; font-size: 1.75rem; font-weight: 400; color: var(--ink); }
+        .section-count { font-size: 0.78rem; color: var(--ink-4); font-weight: 600; background: var(--gray-6); padding: 0.35rem 0.9rem; border-radius: 100px; }
+
+        #materials-grid {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem;
+        }
+
+        .material-card {
+            background: var(--white); border: 1px solid var(--gray-5); border-radius: var(--radius-lg);
+            overflow: hidden; transition: var(--transition); cursor: pointer; animation: fadeUp 0.5s ease both;
+        }
+        .material-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--blue-4); }
+
+        .card-thumb { height: 130px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .card-thumb-emoji { font-size: 3rem; }
+        .doc-preview { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+
+        /* Favorite button on card */
+        .card-fav-btn {
+            position: absolute; top: 0.75rem; right: 0.75rem;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.5);
+            display: grid; place-items: center; cursor: pointer; transition: var(--transition);
+            backdrop-filter: blur(4px);
+        }
+        .card-fav-btn:hover { background: white; transform: scale(1.1); }
+        .card-fav-btn svg { width: 14px; height: 14px; stroke: var(--gray-3); fill: none; stroke-width: 2; transition: var(--transition); }
+        .card-fav-btn.faved svg { stroke: #E05A5A; fill: #E05A5A; }
+
+        .card-body { padding: 1.25rem; }
+        .card-meta { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+        .card-tag {
+            font-size: 0.64rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 100px;
+            text-transform: uppercase; letter-spacing: 0.07em;
+        }
+        .tag-default   { background: var(--blue-6);  color: var(--blue-2);  border: 1px solid var(--blue-5); }
+        .tag-fundamental { background: #E8F5EE; color: #2E7D5A; border: 1px solid #C0E8D0; }
+        .tag-medio     { background: #E8E4F8; color: #5B4FC0; border: 1px solid #CFC9F0; }
+        .tag-infantil  { background: var(--amber-wash); color: var(--amber); border: 1px solid var(--amber-light); }
+
+        .card-title { font-family: 'DM Serif Display', serif; font-size: 1.05rem; font-weight: 400; color: var(--ink); margin-bottom: 0.4rem; line-height: 1.3; }
+        .card-desc { font-size: 0.78rem; color: var(--ink-3); line-height: 1.55; }
+
+        .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; }
+        .card-lock { display: flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+        .card-lock svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .card-lock.free { color: var(--success); }
+        .card-lock.premium { color: var(--amber); }
+
+        .btn-card {
+            font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 700; border: none;
+            padding: 0.5rem 1.1rem; border-radius: 100px; cursor: pointer; transition: var(--transition);
+            background: var(--blue-5); color: var(--blue-1);
+        }
+        .btn-card:hover { background: var(--blue-4); transform: translateY(-1px); }
+        .btn-card.premium-card-btn { background: var(--amber-wash); color: var(--amber); }
+        .btn-card.premium-card-btn:hover { background: var(--amber-light); }
+
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 4rem 2rem; color: var(--ink-4); }
+        .empty-state-icon { width: 56px; height: 56px; border-radius: 16px; background: var(--gray-6); margin: 0 auto 1rem; display: grid; place-items: center; }
+        .empty-state-icon svg { width: 24px; height: 24px; stroke: var(--gray-4); fill: none; stroke-width: 1.5; }
+        .empty-state p { font-size: 0.875rem; }
+
+        /* Loading skeleton */
+        .skeleton { background: linear-gradient(90deg, var(--gray-6) 25%, var(--surface-2) 50%, var(--gray-6) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: var(--radius-lg); }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* ─── PREMIUM BANNER ────────────────────────────── */
+        .premium-wrap { padding: 0 2rem 5rem; }
+        .premium-card {
+            max-width: 920px; margin: 0 auto;
+            background: linear-gradient(135deg, var(--gray-1) 0%, var(--gray-2) 100%);
+            border-radius: var(--radius-xl); padding: 3.5rem; overflow: hidden; position: relative;
+        }
+        .premium-card::before {
+            content: ''; position: absolute; top: -50%; right: -20%;
+            width: 500px; height: 500px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(58,123,213,0.15) 0%, transparent 70%); pointer-events: none;
+        }
+        .premium-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 3rem; position: relative; flex-wrap: wrap; }
+        .prem-eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber-light); margin-bottom: 1rem; }
+        .prem-eyebrow svg { width: 12px; height: 12px; stroke: none; fill: var(--amber); }
+        .prem-title { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; line-height: 1.1; color: var(--white); }
+        .prem-title em { font-style: italic; color: var(--blue-4); }
+        .prem-desc { color: var(--gray-4); font-size: 0.875rem; margin-top: 0.5rem; }
+        .prem-list { list-style: none; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; }
+        .prem-list li { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; color: rgba(255,255,255,0.75); font-weight: 400; }
+        .check-icon { width: 16px; height: 16px; flex-shrink: 0; }
+        .check-icon svg { width: 16px; height: 16px; stroke: var(--blue-3); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        .prem-price-box { text-align: center; flex-shrink: 0; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); padding: 2rem 2.5rem; backdrop-filter: blur(10px); }
+        .prem-price { font-family: 'DM Serif Display', serif; font-size: 3.2rem; font-weight: 400; color: var(--white); line-height: 1; letter-spacing: -0.03em; }
+        .prem-price sub { font-size: 1rem; font-weight: 400; color: var(--gray-4); font-family: 'DM Sans', sans-serif; }
+        .prem-period { font-size: 0.75rem; color: var(--gray-4); margin: 0.3rem 0 1.5rem; }
+        .btn-prem {
+            display: block; width: 100%; background: linear-gradient(135deg, #C8892A, #E0A84A); color: white;
+            font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; border: none; padding: 0.95rem 2rem; border-radius: 100px; cursor: pointer;
+            transition: var(--transition); box-shadow: 0 8px 28px rgba(200,137,42,0.35); white-space: nowrap;
+        }
+        .btn-prem:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(200,137,42,0.5); }
+
+        /* ─── TOAST ─────────────────────────────────────── */
+        #toast {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--ink); color: white; padding: 0.75rem 1.5rem; border-radius: 100px;
+            font-size: 0.85rem; font-weight: 600; z-index: 9000; transition: transform 0.35s cubic-bezier(.22,1,.36,1), opacity 0.35s;
+            opacity: 0; pointer-events: none; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.5rem;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        #toast.toast-success { background: var(--success); }
+        #toast.toast-error { background: var(--error); }
+
+        /* ─── MODAIS COMPARTILHADOS ──────────────────────── */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 800; display: none; place-items: center; padding: 1.5rem;
+            background: rgba(14, 24, 37, 0.5); backdrop-filter: blur(12px);
+        }
+        .modal-overlay.open { display: grid; }
+
+        .modal-box {
+            background: var(--white); border: 1px solid var(--gray-5); border-radius: var(--radius-xl); padding: 2.75rem;
+            width: 100%; max-width: 400px; position: relative; box-shadow: var(--shadow-xl); animation: modalIn 0.4s cubic-bezier(.22,1,.36,1) both;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .modal-close {
+            position: absolute; top: 1.25rem; right: 1.25rem; width: 30px; height: 30px; background: var(--gray-6); border: 1px solid var(--gray-5);
+            border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: var(--ink-4); transition: var(--transition); border: none;
+        }
+        .modal-close:hover { color: var(--ink); background: var(--gray-5); }
+        .modal-close svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.8rem; font-weight: 400; margin-bottom: 1.75rem; line-height: 1.15; color: var(--ink); }
+
+        /* ─── AUTH MODAL ────────────────────────────────── */
+        .auth-tab-row { display: flex; gap: 0; margin-bottom: 1.5rem; background: var(--gray-6); border-radius: 100px; padding: 4px; }
+        .auth-tab {
+            flex: 1; padding: 0.5rem; border: none; background: transparent; font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem; font-weight: 700; color: var(--ink-4); cursor: pointer; border-radius: 100px; transition: var(--transition);
+        }
+        .auth-tab.active { background: var(--white); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+        .auth-form { display: none; flex-direction: column; gap: 0.7rem; }
+        .auth-form.show { display: flex; }
+
+        .input-wrap { position: relative; }
+        .input-field {
+            width: 100%; padding: 0.875rem 1.1rem; background: var(--bg); border: 1.5px solid var(--gray-5);
+            border-radius: var(--radius-sm); color: var(--ink); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+            transition: var(--transition);
+        }
+        .input-field::placeholder { color: var(--ink-4); }
+        .input-field:focus { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px var(--blue-6); outline: none; }
+        .input-field.input-error { border-color: var(--error); background: var(--error-bg); box-shadow: 0 0 0 3px #FAE8E8; }
+        .input-field.input-success { border-color: var(--success); background: var(--success-bg); }
+
+        .error-msg { color: var(--error); font-size: 0.7rem; font-weight: 600; display: none; margin-top: 0.3rem; padding: 0 0.1rem; }
+        .error-msg.visible { display: block; }
+
+        .pass-toggle {
+            position: absolute; right: 0.875rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: var(--ink-4); padding: 0; display: grid; place-items: center;
+        }
+        .pass-toggle svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .pass-toggle:hover { color: var(--ink); }
+
+        /* Password strength indicator */
+        .pass-strength { margin-top: 0.4rem; }
+        .pass-strength-bar { height: 3px; border-radius: 100px; background: var(--gray-6); overflow: hidden; }
+        .pass-strength-fill { height: 100%; border-radius: 100px; transition: width 0.3s, background 0.3s; width: 0; }
+        .pass-strength-label { font-size: 0.65rem; font-weight: 700; margin-top: 0.25rem; display: block; }
+
+        .btn-submit { margin-top: 0.5rem; width: 100%; padding: 0.95rem; border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
+        .btn-submit:hover { transform: translateY(-1px); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-login-s { background: var(--accent); color: white; box-shadow: 0 6px 20px var(--accent-glow); }
+        .btn-login-s:hover:not(:disabled) { box-shadow: 0 10px 28px rgba(58,123,213,0.4); }
+        .btn-reg-s { background: var(--ink); color: white; }
+        .btn-reg-s:hover:not(:disabled) { box-shadow: 0 10px 28px rgba(14,24,37,0.3); }
+
+        /* Spinner dentro do botão */
+        .btn-spinner { display: none; }
+        .btn-submit.loading .btn-text { display: none; }
+        .btn-submit.loading .btn-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Divider */
+        .auth-divider { display: flex; align-items: center; gap: 0.75rem; margin: 0.5rem 0; }
+        .auth-divider span { font-size: 0.7rem; color: var(--ink-4); font-weight: 600; white-space: nowrap; }
+        .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-5); }
+
+        /* Forgot password link */
+        .forgot-link { font-size: 0.75rem; color: var(--accent); text-decoration: none; font-weight: 600; text-align: right; display: block; margin-top: -0.25rem; }
+        .forgot-link:hover { text-decoration: underline; }
+
+        /* ─── MATERIAL PREVIEW MODAL ────────────────────── */
+        #modal-material .modal-box {
+            max-width: 560px; padding: 0; overflow: hidden;
+        }
+
+        .mat-preview-thumb {
+            height: 180px; display: flex; align-items: center; justify-content: center;
+            font-size: 4rem; position: relative;
+        }
+        .mat-preview-badge {
+            position: absolute; top: 1rem; right: 1rem;
+            font-size: 0.65rem; font-weight: 700; padding: 0.3rem 0.75rem; border-radius: 100px;
+            text-transform: uppercase; letter-spacing: 0.07em;
+        }
+
+        .mat-preview-body { padding: 1.75rem 2rem 2rem; }
+        .mat-preview-meta { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+        .mat-preview-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-weight: 400; color: var(--ink); line-height: 1.2; margin-bottom: 0.6rem; }
+        .mat-preview-desc { font-size: 0.875rem; color: var(--ink-3); line-height: 1.65; margin-bottom: 1.5rem; }
+
+        .mat-preview-info { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1.5rem; }
+        .mat-info-item { background: var(--bg); border-radius: var(--radius-sm); padding: 0.75rem 1rem; }
+        .mat-info-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4); margin-bottom: 0.2rem; }
+        .mat-info-val { font-size: 0.82rem; font-weight: 700; color: var(--ink); }
+
+        .mat-preview-actions { display: flex; gap: 0.75rem; }
+        .btn-access {
+            flex: 1; background: var(--accent); color: white; border: none;
+            padding: 0.9rem 1.5rem; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: var(--transition);
+        }
+        .btn-access:hover { background: var(--blue-1); transform: translateY(-1px); }
+        .btn-fav-modal {
+            background: var(--bg); border: 1.5px solid var(--gray-5); color: var(--ink-3);
+            padding: 0.9rem 1.2rem; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+            display: flex; align-items: center; gap: 0.4rem; font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem; font-weight: 700;
+        }
+        .btn-fav-modal:hover { border-color: #E05A5A; color: #E05A5A; background: #FDF2F2; }
+        .btn-fav-modal.faved { border-color: #E05A5A; color: #E05A5A; background: #FDF2F2; }
+        .btn-fav-modal svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; transition: var(--transition); }
+        .btn-fav-modal.faved svg { fill: #E05A5A; }
+
+        /* ─── ADMIN UPLOAD MODAL ─────────────────────────── */
+        #modal-upload .modal-box { max-width: 500px; }
+
+        .upload-drop-zone {
+            border: 2px dashed var(--gray-5); border-radius: var(--radius-md);
+            padding: 2rem; text-align: center; transition: var(--transition); cursor: pointer;
+            background: var(--bg); position: relative;
+        }
+        .upload-drop-zone:hover, .upload-drop-zone.dragover { border-color: var(--accent); background: var(--blue-6); }
+        .upload-drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+        .upload-drop-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--blue-5); margin: 0 auto 0.75rem; display: grid; place-items: center; }
+        .upload-drop-icon svg { width: 20px; height: 20px; stroke: var(--blue-2); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .upload-drop-text { font-size: 0.82rem; color: var(--ink-3); }
+        .upload-drop-text strong { color: var(--accent); }
+        .upload-file-name { margin-top: 0.75rem; font-size: 0.78rem; font-weight: 600; color: var(--success); display: none; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+        .form-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4); }
+
+        .toggle-premium { display: flex; align-items: center; justify-content: space-between; padding: 0.875rem 1.1rem; background: var(--bg); border: 1.5px solid var(--gray-5); border-radius: var(--radius-sm); }
+        .toggle-premium span { font-size: 0.875rem; font-weight: 600; color: var(--ink); }
+        .toggle-switch { position: relative; width: 38px; height: 22px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: var(--gray-5); border-radius: 100px; cursor: pointer; transition: var(--transition); }
+        .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: var(--transition); }
+        .toggle-switch input:checked + .toggle-slider { background: var(--accent); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+        /* ─── DASHBOARD / FAVORITES PANEL ───────────────── */
+        #modal-dashboard .modal-box { max-width: 600px; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; padding: 0; }
+        .dash-header { padding: 2rem 2rem 1.25rem; border-bottom: 1px solid var(--gray-6); flex-shrink: 0; }
+        .dash-tabs { display: flex; gap: 0; background: var(--gray-6); border-radius: 100px; padding: 3px; }
+        .dash-tab {
+            flex: 1; border: none; background: transparent; font-family: 'DM Sans', sans-serif;
+            font-size: 0.78rem; font-weight: 700; color: var(--ink-4); cursor: pointer;
+            padding: 0.45rem 0.75rem; border-radius: 100px; transition: var(--transition); white-space: nowrap;
+        }
+        .dash-tab.active { background: var(--white); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+        .dash-body { flex: 1; overflow-y: auto; padding: 1.5rem 2rem 2rem; }
+        .dash-panel { display: none; }
+        .dash-panel.active { display: block; }
+
+        .dash-profile-info { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
+        .dash-avatar-big {
+            width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--blue-2), var(--blue-3));
+            color: white; font-size: 1.3rem; font-weight: 700; display: grid; place-items: center; font-family: 'DM Sans', sans-serif; flex-shrink: 0;
+        }
+        .dash-profile-name { font-family: 'DM Serif Display', serif; font-size: 1.35rem; font-weight: 400; }
+        .dash-profile-email { font-size: 0.78rem; color: var(--ink-4); margin-top: 0.1rem; }
+
+        .dash-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+        .dash-stat { background: var(--bg); border-radius: var(--radius-sm); padding: 1rem; text-align: center; }
+        .dash-stat-num { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--ink); }
+        .dash-stat-label { font-size: 0.65rem; color: var(--ink-4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-top: 0.1rem; }
+
+        .fav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .fav-card {
+            background: var(--bg); border: 1px solid var(--gray-5); border-radius: var(--radius-md);
+            padding: 0.875rem; cursor: pointer; transition: var(--transition); display: flex; gap: 0.75rem; align-items: flex-start;
+        }
+        .fav-card:hover { border-color: var(--blue-3); background: var(--white); }
+        .fav-emoji { font-size: 1.5rem; flex-shrink: 0; }
+        .fav-title { font-size: 0.8rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+        .fav-cond { font-size: 0.65rem; color: var(--ink-4); margin-top: 0.15rem; }
+        .fav-empty { text-align: center; padding: 2rem; color: var(--ink-4); font-size: 0.875rem; }
+        .fav-empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+        .history-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .history-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; background: var(--bg); border-radius: var(--radius-sm); }
+        .history-emoji { font-size: 1.25rem; }
+        .history-title { font-size: 0.82rem; font-weight: 700; color: var(--ink); }
+        .history-time { font-size: 0.65rem; color: var(--ink-4); margin-top: 0.1rem; }
+
+        /* ─── RESPONSIVE ────────────────────────────────── */
+        @media (max-width: 768px) {
+            nav { padding: 0 1.25rem; }
+            .funnel-panel { padding: 1.75rem 1.5rem; }
+            .premium-card { padding: 2.25rem 1.75rem; }
+            .stats-strip { gap: 1.5rem; }
+            .mat-preview-info { grid-template-columns: 1fr; }
+            .fav-grid { grid-template-columns: 1fr; }
+            .dash-stats-row { grid-template-columns: repeat(3, 1fr); }
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        /* ─── FOOTER ────────────────────────────────────── */
+        footer { border-top: 1px solid var(--gray-6); padding: 2rem; text-align: center; font-size: 0.75rem; color: var(--ink-4); font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast" role="alert" aria-live="assertive"></div>
+
+<!-- ─── NAVBAR ──────────────────────────────────────────── -->
+<nav>
+    <a href="#" class="nav-logo" onclick="location.reload(); return false;" aria-label="Recarregar página inicial">
+        <div class="nav-logo-mark">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <span class="nav-logo-text">Edu<span>Inclusiva</span></span>
+    </a>
+
+    <div id="auth-nav" class="nav-actions">
+        <button class="btn-ghost" onclick="toggleModal('modal-auth', 'login')">Entrar</button>
+        <button class="btn-primary" onclick="toggleModal('modal-auth', 'register')">Criar conta</button>
+    </div>
+
+    <div id="user-nav">
+        <div class="nav-user-info">
+            <p id="nav-user-name"></p>
+            <span id="nav-user-plan" class="free">Free</span>
+        </div>
+        <div class="nav-avatar-wrap">
+            <button class="nav-avatar" id="nav-avatar-btn" onclick="toggleDropdown()" aria-label="Menu do usuário" aria-expanded="false"></button>
+            <div class="nav-dropdown" id="nav-dropdown">
+                <div class="dropdown-header">
+                    <div class="dropdown-name" id="dd-name"></div>
+                    <div class="dropdown-email" id="dd-email"></div>
+                </div>
+                <button class="dropdown-item" onclick="openDashboard('perfil')">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                    Meu Perfil
+                </button>
+                <button class="dropdown-item" onclick="openDashboard('favoritos')">
+                    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    Meus Favoritos <span id="dd-fav-badge" style="margin-left:auto;background:var(--error);color:white;font-size:0.6rem;font-weight:700;padding:0.1rem 0.45rem;border-radius:100px;display:none;"></span>
+                </button>
+                <button class="dropdown-item" onclick="openDashboard('historico')">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Histórico
+                </button>
+                <button class="dropdown-item" id="admin-upload-btn" onclick="closeDropdown(); toggleModal('modal-upload')" style="display:none;">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Postar Material
+                </button>
+                <button class="dropdown-item danger" onclick="handleLogout()">
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Sair
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ─── HERO ──────────────────────────────────────────────── -->
+<section class="hero">
+    <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Inteligência Pedagógica
+    </div>
+    <h1 class="hero-title">Materiais feitos para<br>cada <em>mente única</em></h1>
+    <p class="hero-sub">Recursos didáticos adaptados para TEA, TDAH, Dislexia, Superdotação, Síndrome de Down e muito mais.</p>
+
+    <div class="hero-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search-input" placeholder="Buscar material (ex: Emoções, Rotina...)" oninput="handleSearch(event)" aria-label="Buscar materiais">
+    </div>
+
+    <div class="stats-strip">
+        <div class="stat-item"><div class="stat-num">800+</div><div class="stat-label">Materiais</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><div class="stat-num">Professores</div><div class="stat-label">Especialistas</div></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><div class="stat-num">6</div><div class="stat-label">Áreas de Suporte</div></div>
+    </div>
+</section>
+
+<!-- ─── FUNNEL ──────────────────────────────────────────────── -->
+<div class="funnel-wrap">
+<div class="funnel-panel">
+
+    <div class="progress-wrap">
+        <div class="progress-label">
+            <span id="step-indicator" aria-live="polite">Passo 1 de 3</span>
+            <span id="step-name-label">Necessidade</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-seg active" id="ps-1"></div>
+            <div class="progress-seg" id="ps-2"></div>
+            <div class="progress-seg" id="ps-3"></div>
+        </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="step-1" class="filter-step active">
+        <h2 class="step-label">Qual a <span>necessidade</span> do aluno?</h2>
+        <div class="choice-grid">
+            <button class="btn-choice" onclick="selectCondition('autismo')">
+                <div class="choice-icon ci-blue"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 20s0-4 4-4 4 4 4 4"/></svg></div>
+                <span class="choice-name">Autismo (TEA)</span>
+                <span class="choice-desc">Todos os graus de suporte e perfis</span>
+            </button>
+            <button class="btn-choice" onclick="selectCondition('tdah')">
+                <div class="choice-icon ci-amber"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                <span class="choice-name">TDAH</span>
+                <span class="choice-desc">Atenção, hiperatividade e impulsividade</span>
+            </button>
+            <button class="btn-choice" onclick="selectCondition('dislexia')">
+                <div class="choice-icon ci-indigo"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+                <span class="choice-name">Dislexia</span>
+                <span class="choice-desc">Dificuldades de leitura e escrita</span>
+            </button>
+            <button class="btn-choice" onclick="selectCondition('superdotacao')">
+                <div class="choice-icon ci-amber"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                <span class="choice-name">Superdotação</span>
+                <span class="choice-desc">Altas habilidades e enriquecimento</span>
+            </button>
+            <button class="btn-choice" onclick="selectCondition('down')">
+                <div class="choice-icon ci-rose"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                <span class="choice-name">Sínd. de Down</span>
+                <span class="choice-desc">Materiais adaptados e acessíveis</span>
+            </button>
+            <button class="btn-choice" onclick="selectCondition('todos')">
+                <div class="choice-icon ci-slate"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <span class="choice-name">Outros / Geral</span>
+                <span class="choice-desc">Demais necessidades educacionais</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- STEP 2: Grau (autismo) -->
+    <div id="step-autismo" class="filter-step">
+        <button class="btn-back" onclick="prevStep(1)">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Voltar
+        </button>
+        <h2 class="step-label">Qual o <span>Grau de Suporte</span>?</h2>
+        <div class="choice-grid cols-3">
+            <button class="btn-choice" onclick="selectLevel('1')">
+                <span class="lvl-badge lvl-1">Nível 1</span>
+                <span class="choice-name">Suporte Leve</span>
+                <span class="choice-desc">Autonomia com acompanhamento pontual em situações específicas.</span>
+            </button>
+            <button class="btn-choice" onclick="selectLevel('2')">
+                <span class="lvl-badge lvl-2">Nível 2</span>
+                <span class="choice-name">Suporte Moderado</span>
+                <span class="choice-desc">Necessidade de auxílio frequente em tarefas sociais e rotineiras.</span>
+            </button>
+            <button class="btn-choice" onclick="selectLevel('3')">
+                <span class="lvl-badge lvl-3">Nível 3</span>
+                <span class="choice-name">Suporte Intenso</span>
+                <span class="choice-desc">Necessidade de apoio constante em todas as áreas da vida.</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="step-final" class="filter-step">
+        <button class="btn-back" id="btn-final-back" onclick="goFinalBack()">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg> Voltar
+        </button>
+        <h2 class="step-label">Refine sua <span>busca</span></h2>
+        <div class="final-row">
+            <div>
+                <p class="final-label">Ano Escolar</p>
+                <select id="filter-grade" class="select-styled" onchange="autoFilter()">
+                    <option value="">Todos os anos</option>
+                    <option value="infantil">Educação Infantil</option>
+                    <option value="fundamental">Ensino Fundamental (1º–9º)</option>
+                    <option value="medio">Ensino Médio (1º–3º)</option>
+                </select>
+            </div>
+            <div>
+                <p class="final-label">Tipo de Conteúdo</p>
+                <div class="tag-group">
+                    <button class="tag-btn" onclick="toggleTag(this)">Atividades</button>
+                    <button class="tag-btn" onclick="toggleTag(this)">Exercícios</button>
+                    <button class="tag-btn" onclick="toggleTag(this)">Jogos</button>
+                    <button class="tag-btn" onclick="toggleTag(this)">Fichas</button>
+                </div>
+            </div>
+        </div>
+        <button class="btn-apply" onclick="applyFilters(true)">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Aplicar e Ver Materiais
+        </button>
+    </div>
+
+</div>
+</div>
+
+<!-- ─── MATERIALS ────────────────────────────────────────── -->
+<div class="materials-section">
+    <div class="section-header">
+        <h2 class="section-title">Materiais Disponíveis</h2>
+        <span class="section-count" id="materials-count" aria-live="polite"></span>
+    </div>
+    <div id="materials-grid"></div>
+</div>
+
+<!-- ─── PREMIUM ──────────────────────────────────────────── -->
+<div class="premium-wrap">
+<div class="premium-card">
+<div class="premium-inner">
+    <div>
+        <div class="prem-eyebrow"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Premium</div>
+        <h2 class="prem-title">EduInclusiva<br><em>Premium</em></h2>
+        <p class="prem-desc">Acesso ilimitado a todos os materiais e suporte especializado.</p>
+        <ul class="prem-list">
+            <li><span class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span> Downloads em Alta Definição</li>
+            <li><span class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span> Suporte Especializado via Chat</li>
+            <li><span class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span> Materiais para Suporte Intenso (Nível 3)</li>
+            <li><span class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span> Novos conteúdos toda semana</li>
+        </ul>
+    </div>
+    <div class="prem-price-box">
+        <div class="prem-price">R$ 9<sub>,99/mês</sub></div>
+        <p class="prem-period">Cancele quando quiser</p>
+        <button class="btn-prem" onclick="handleSubscribe()">Assinar Agora</button>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- ─── AUTH MODAL ────────────────────────────────────────── -->
+<div id="modal-auth" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('modal-auth')" aria-label="Fechar janela">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+
+        <div class="auth-tab-row">
+            <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Entrar</button>
+            <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Criar conta</button>
+        </div>
+
+        <!-- LOGIN -->
+        <div id="login-view" class="auth-form show">
+            <h3 id="auth-modal-title" class="modal-title">Bem-vindo de volta</h3>
+            <form onsubmit="authAction(event,'login')" style="display:flex;flex-direction:column;gap:0.7rem;">
+                <div class="input-wrap">
+                    <input type="email" id="login-email" placeholder="E-mail" class="input-field" required autocomplete="email">
+                    <p id="err-login-email" class="error-msg">E-mail não encontrado.</p>
+                </div>
+                <div class="input-wrap">
+                    <input type="password" id="login-password" placeholder="Senha" class="input-field" required autocomplete="current-password" style="padding-right: 3rem;">
+                    <button type="button" class="pass-toggle" onclick="togglePass('login-password', this)" aria-label="Mostrar/esconder senha">
+                        <svg viewBox="0 0 24 24" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                    <p id="err-login-password" class="error-msg">Senha incorreta.</p>
+                </div>
+                <a href="#" class="forgot-link" onclick="showForgotToast(); return false;">Esqueceu a senha?</a>
+                <button type="submit" class="btn-submit btn-login-s" id="btn-login">
+                    <span class="btn-text">Entrar</span>
+                    <span class="btn-spinner"></span>
+                </button>
+            </form>
+        </div>
+
+        <!-- REGISTER -->
+        <div id="register-view" class="auth-form">
+            <h3 class="modal-title">Criar seu perfil</h3>
+            <form onsubmit="authAction(event,'register')" style="display:flex;flex-direction:column;gap:0.7rem;">
+                <div class="input-wrap">
+                    <input type="text" id="reg-name" placeholder="Nome completo" class="input-field" required autocomplete="name" oninput="validateName(this)">
+                    <p id="err-reg-name" class="error-msg">Nome muito curto (mín. 3 caracteres).</p>
+                </div>
+                <div class="input-wrap">
+                    <input type="email" id="reg-email" placeholder="E-mail" class="input-field" required autocomplete="email" oninput="validateEmail(this)">
+                    <p id="err-reg-email" class="error-msg">Este e-mail já está em uso.</p>
+                </div>
+                <div class="input-wrap">
+                    <input type="password" id="reg-password" placeholder="Senha (mín. 6 caracteres)" class="input-field" minlength="6" required autocomplete="new-password" oninput="checkPassStrength(this)" style="padding-right: 3rem;">
+                    <button type="button" class="pass-toggle" onclick="togglePass('reg-password', this)" aria-label="Mostrar/esconder senha">
+                        <svg viewBox="0 0 24 24" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                    <div class="pass-strength">
+                        <div class="pass-strength-bar"><div class="pass-strength-fill" id="pass-fill"></div></div>
+                        <span class="pass-strength-label" id="pass-label"></span>
+                    </div>
+                </div>
+                <div class="input-wrap">
+                    <input type="password" id="reg-confirm" placeholder="Confirmar senha" class="input-field" required autocomplete="new-password" oninput="validateConfirm(this)" style="padding-right: 3rem;">
+                    <p id="err-reg-confirm" class="error-msg">As senhas não coincidem.</p>
+                </div>
+                <button type="submit" class="btn-submit btn-reg-s" id="btn-register">
+                    <span class="btn-text">Finalizar cadastro</span>
+                    <span class="btn-spinner"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ─── MATERIAL PREVIEW MODAL ───────────────────────────── -->
+<div id="modal-material" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="mat-preview-title">
+    <div class="modal-box" style="max-width:560px;padding:0;overflow:hidden;">
+        <button class="modal-close" onclick="closeModal('modal-material')" aria-label="Fechar" style="top:0.75rem;right:0.75rem;z-index:10;">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="mat-preview-thumb" id="mat-preview-thumb">
+            <span id="mat-preview-emoji" style="font-size:4rem;"></span>
+            <span class="mat-preview-badge" id="mat-preview-badge"></span>
+        </div>
+        <div class="mat-preview-body">
+            <div class="mat-preview-meta" id="mat-preview-meta"></div>
+            <h3 class="mat-preview-title" id="mat-preview-title"></h3>
+            <p class="mat-preview-desc" id="mat-preview-desc"></p>
+            <div class="mat-preview-info" id="mat-preview-info"></div>
+            <div class="mat-preview-actions">
+                <button class="btn-access" id="mat-btn-access" onclick="confirmAccess()"></button>
+                <button class="btn-fav-modal" id="mat-btn-fav" onclick="toggleFavFromModal()">
+                    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    Favoritar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── UPLOAD MODAL (ADMIN) ─────────────────────────────── -->
+<div id="modal-upload" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width:500px;">
+        <button class="modal-close" onclick="closeModal('modal-upload')" aria-label="Fechar">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <h3 class="modal-title">Postar Material</h3>
+        <form onsubmit="handleUpload(event)" style="display:flex;flex-direction:column;gap:0.875rem;">
+            <!-- Drop zone -->
+            <div class="upload-drop-zone" id="drop-zone" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+                <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.mp4" onchange="onFileSelect(event)">
+                <div class="upload-drop-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                <p class="upload-drop-text"><strong>Clique para selecionar</strong> ou arraste o arquivo aqui<br><small style="color:var(--ink-4);">PDF, Imagem ou Vídeo · Máx. 20MB</small></p>
+                <p class="upload-file-name" id="upload-file-name"></p>
+            </div>
+            <div class="input-wrap">
+                <input type="text" id="up-title" placeholder="Título do material" class="input-field" required>
+            </div>
+            <textarea id="up-desc" placeholder="Descrição breve do material" class="input-field" rows="2" style="resize:vertical;line-height:1.5;"></textarea>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Necessidade</label>
+                    <select id="up-condition" class="select-styled" required>
+                        <option value="">Selecione</option>
+                        <option value="autismo">Autismo (TEA)</option>
+                        <option value="tdah">TDAH</option>
+                        <option value="dislexia">Dislexia</option>
+                        <option value="superdotacao">Superdotação</option>
+                        <option value="down">Sínd. de Down</option>
+                        <option value="todos">Geral</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ano Escolar</label>
+                    <select id="up-grade" class="select-styled" required>
+                        <option value="">Selecione</option>
+                        <option value="infantil">Ed. Infantil</option>
+                        <option value="fundamental">Fundamental</option>
+                        <option value="medio">Ensino Médio</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Tipo</label>
+                    <select id="up-type" class="select-styled" required>
+                        <option value="">Selecione</option>
+                        <option>Atividades</option>
+                        <option>Exercícios</option>
+                        <option>Jogos</option>
+                        <option>Fichas</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Disponibilidade</label>
+                    <div class="toggle-premium">
+                        <span>Apenas Premium</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="up-premium">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit btn-login-s" id="btn-upload" style="margin-top:0.25rem;">
+                <span class="btn-text">Publicar Material</span>
+                <span class="btn-spinner"></span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ─── DASHBOARD MODAL ───────────────────────────────────── -->
+<div id="modal-dashboard" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width:600px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;padding:0;">
+        <button class="modal-close" onclick="closeModal('modal-dashboard')" aria-label="Fechar" style="top:1rem;right:1rem;z-index:10;">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div style="padding:1.75rem 2rem 1.25rem;border-bottom:1px solid var(--gray-6);flex-shrink:0;">
+            <h3 style="font-family:'DM Serif Display',serif;font-size:1.5rem;font-weight:400;margin-bottom:1rem;">Minha Conta</h3>
+            <div class="dash-tabs">
+                <button class="dash-tab active" onclick="switchDashTab('perfil')">Perfil</button>
+                <button class="dash-tab" onclick="switchDashTab('favoritos')">Favoritos</button>
+                <button class="dash-tab" onclick="switchDashTab('historico')">Histórico</button>
+            </div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:1.5rem 2rem 2rem;">
+            <!-- PERFIL -->
+            <div id="dash-perfil" class="dash-panel active">
+                <div class="dash-profile-info">
+                    <div class="dash-avatar-big" id="dash-avatar"></div>
+                    <div>
+                        <div class="dash-profile-name" id="dash-name"></div>
+                        <div class="dash-profile-email" id="dash-email-text"></div>
+                    </div>
+                </div>
+                <div class="dash-stats-row">
+                    <div class="dash-stat">
+                        <div class="dash-stat-num" id="dash-fav-count">0</div>
+                        <div class="dash-stat-label">Favoritos</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-num" id="dash-hist-count">0</div>
+                        <div class="dash-stat-label">Acessados</div>
+                    </div>
+                    <div class="dash-stat">
+                        <div class="dash-stat-num" id="dash-plan-text">Free</div>
+                        <div class="dash-stat-label">Plano</div>
+                    </div>
+                </div>
+                <button class="btn-prem" onclick="closeModal('modal-dashboard'); handleSubscribe();" style="max-width:100%;display:block;margin:0 auto;" id="dash-upgrade-btn">
+                    Fazer Upgrade para Premium ✦
+                </button>
+            </div>
+            <!-- FAVORITOS -->
+            <div id="dash-favoritos" class="dash-panel">
+                <div class="fav-grid" id="fav-grid-content"></div>
+            </div>
+            <!-- HISTÓRICO -->
+            <div id="dash-historico" class="dash-panel">
+                <div class="history-list" id="history-list-content"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    © 2026 EduInclusiva · Todos os direitos reservados
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   CONFIG — altere a BASE_URL para o endereço do seu servidor
+   Em desenvolvimento: 'http://localhost:3000/api'
+   Em produção: 'https://seusite.com/api'
+   ══════════════════════════════════════════════════════ */
+const API_BASE = 'http://localhost:3000/api';
+
+/* ─── TOAST ──────────────────────────────────────────── */
+function showToast(msg, type = '', dur = 3500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `show ${type ? 'toast-' + type : ''}`;
+    setTimeout(() => t.className = '', dur);
+}
+
+/* ─── STATE ──────────────────────────────────────────── */
+const state = {
+    condition: '',
+    level: '',
+    grade: '',
+    types: [],
+    searchQuery: '',
+    currentMaterialId: null,
+};
+
+/* ─── STORAGE HELPERS ────────────────────────────────── */
+function getUser()    { try { return JSON.parse(localStorage.getItem('edu_user') || 'null'); } catch { return null; } }
+function getToken()   { return localStorage.getItem('edu_token') || ''; }
+function setSession(token, user) {
+    localStorage.setItem('edu_token', token);
+    localStorage.setItem('edu_user', JSON.stringify(user));
+}
+function clearSession() {
+    localStorage.removeItem('edu_token');
+    localStorage.removeItem('edu_user');
+}
+
+function getFavorites() { try { return JSON.parse(localStorage.getItem('edu_favs') || '[]'); } catch { return []; } }
+function saveFavorites(favs) { localStorage.setItem('edu_favs', JSON.stringify(favs)); }
+function getHistory()   { try { return JSON.parse(localStorage.getItem('edu_history') || '[]'); } catch { return []; } }
+function addToHistory(material) {
+    let history = getHistory();
+    history = history.filter(h => h.id !== material.id); // remove duplicatas
+    history.unshift({ id: material.id, emoji: material.emoji, title: material.title, condition: material.condition, time: Date.now() });
+    if (history.length > 20) history = history.slice(0, 20);
+    localStorage.setItem('edu_history', JSON.stringify(history));
+}
+
+/* ─── API HELPERS ────────────────────────────────────── */
+async function apiFetch(endpoint, options = {}) {
+    const token = getToken();
+    const headers = { 'Content-Type': 'application/json', ...options.headers };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const res = await fetch(API_BASE + endpoint, { ...options, headers });
+    const data = await res.json();
+    if (!res.ok) throw data;
+    return data;
+}
+
+/* ─── MODAL SYSTEM ───────────────────────────────────── */
+function toggleModal(modalId, view) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.classList.add('open');
+    if (view && modalId === 'modal-auth') switchTab(view);
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.classList.remove('open');
+}
+
+// Fechar ao clicar fora
+document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', function(e) { if (e.target === this) closeModal(this.id); });
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
+});
+
+/* ─── AUTH TABS ──────────────────────────────────────── */
+function switchTab(tab) {
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+    document.getElementById('login-view').classList.toggle('show', tab === 'login');
+    document.getElementById('register-view').classList.toggle('show', tab === 'register');
+    resetErrors();
+}
+
+function resetErrors() {
+    document.querySelectorAll('.input-field').forEach(el => {
+        el.classList.remove('input-error', 'input-success');
+    });
+    document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('visible'));
+}
+
+function showFieldError(fieldId, msgId) {
+    const field = document.getElementById(fieldId);
+    const msg   = document.getElementById(msgId);
+    if (field) field.classList.add('input-error');
+    if (msg) msg.classList.add('visible');
+}
+
+/* ─── VALIDAÇÃO EM TEMPO REAL ────────────────────────── */
+function validateName(input) {
+    const ok = input.value.trim().length >= 3;
+    input.classList.toggle('input-error', !ok && input.value.length > 0);
+    input.classList.toggle('input-success', ok);
+    const err = document.getElementById('err-reg-name');
+    if (err) err.classList.toggle('visible', !ok && input.value.length > 0);
+}
+
+function validateEmail(input) {
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+    input.classList.toggle('input-success', ok);
+}
+
+function validateConfirm(input) {
+    const pass = document.getElementById('reg-password').value;
+    const ok = input.value === pass && input.value.length > 0;
+    input.classList.toggle('input-error', !ok && input.value.length > 0);
+    input.classList.toggle('input-success', ok);
+    const err = document.getElementById('err-reg-confirm');
+    if (err) err.classList.toggle('visible', !ok && input.value.length > 0);
+}
+
+function checkPassStrength(input) {
+    const val = input.value;
+    const fill = document.getElementById('pass-fill');
+    const label = document.getElementById('pass-label');
+    if (!val) { fill.style.width = '0'; label.textContent = ''; return; }
+
+    let score = 0;
+    if (val.length >= 6)  score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const levels = [
+        { pct: '20%', color: '#B03A3A', text: 'Muito fraca' },
+        { pct: '40%', color: '#E07A2A', text: 'Fraca' },
+        { pct: '60%', color: '#C8892A', text: 'Razoável' },
+        { pct: '80%', color: '#4A90D9', text: 'Forte' },
+        { pct: '100%', color: '#2E7D5A', text: 'Excelente' },
+    ];
+    const lvl = levels[Math.min(score - 1, 4)] || levels[0];
+    fill.style.width = lvl.pct;
+    fill.style.background = lvl.color;
+    label.textContent = lvl.text;
+    label.style.color = lvl.color;
+}
+
+function togglePass(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const isText = input.type === 'text';
+    input.type = isText ? 'password' : 'text';
+    btn.querySelector('.eye-icon').style.opacity = isText ? '1' : '0.4';
+}
+
+function showForgotToast() {
+    showToast('Recurso de recuperação de senha em breve! Entre em contato pelo suporte.', '', 4000);
+}
+
+/* ─── AUTH ACTION ────────────────────────────────────── */
+async function authAction(e, type) {
+    e.preventDefault();
+    resetErrors();
+
+    const btnId = type === 'login' ? 'btn-login' : 'btn-register';
+    const btn = document.getElementById(btnId);
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    const body = type === 'login'
+        ? { email: document.getElementById('login-email').value.trim(), password: document.getElementById('login-password').value }
+        : {
+            name: document.getElementById('reg-name').value.trim(),
+            email: document.getElementById('reg-email').value.trim(),
+            password: document.getElementById('reg-password').value,
+            confirmPassword: document.getElementById('reg-confirm').value,
+          };
+
+    // Validação de confirmação de senha
+    if (type === 'register' && body.password !== body.confirmPassword) {
+        showFieldError('reg-confirm', 'err-reg-confirm');
+        btn.classList.remove('loading'); btn.disabled = false;
+        return;
+    }
+
+    try {
+        /* ── INTEGRAÇÃO REAL COM BACKEND ──────────────────
+           Descomente o bloco abaixo quando o servidor estiver rodando.
+           O código mock abaixo simula o comportamento correto para desenvolvimento.
+        ────────────────────────────────────────────────── */
+
+        // const data = await apiFetch('/' + type, { method: 'POST', body: JSON.stringify(body) });
+        // const user = { name: data.user.name, email: body.email, subscription: data.user.subscription || 'free', role: data.user.role || 'user' };
+        // setSession(data.token, user);
+
+        /* MOCK — remove quando conectar o backend real */
+        await new Promise(r => setTimeout(r, 900)); // simula latência
+        if (type === 'login') {
+            if (body.email === '') throw { error: 'E-mail não encontrado' };
+            if (body.password.length < 3) throw { error: 'Senha incorreta' };
+        }
+        const user = {
+            name: type === 'register' ? body.name : (body.email.split('@')[0] || 'Usuário'),
+            email: body.email,
+            subscription: 'free',
+            role: body.email.includes('admin') ? 'admin' : 'user'
+        };
+        setSession('mock-token-' + Date.now(), user);
+        /* FIM MOCK */
+
+        closeModal('modal-auth');
+        updateNavSession(user);
+        showToast(`Bem-vindo${type === 'login' ? ' de volta' : ''}, ${user.name.split(' ')[0]}! ✓`, 'success');
+
+    } catch (err) {
+        const msg = err?.error || 'Erro no servidor. Tente novamente.';
+        if (msg.includes('E-mail') || msg.includes('email')) showFieldError('login-email', 'err-login-email');
+        if (msg.includes('Senha') || msg.includes('senha')) showFieldError('login-password', 'err-login-password');
+        if (msg.includes('uso')) showFieldError('reg-email', 'err-reg-email');
+        showToast(msg, 'error');
+    } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
+}
+
+/* ─── SESSION ────────────────────────────────────────── */
+function updateNavSession(user) {
+    if (!user) return;
+    document.getElementById('auth-nav').style.display = 'none';
+    document.getElementById('user-nav').style.display = 'flex';
+    document.getElementById('nav-user-name').textContent = user.name.split(' ')[0];
+
+    const planEl = document.getElementById('nav-user-plan');
+    planEl.textContent = user.subscription === 'premium' ? 'Premium' : 'Free';
+    planEl.className = user.subscription === 'premium' ? '' : 'free';
+
+    const initials = user.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('nav-avatar-btn').textContent = initials;
+
+    // Dropdown info
+    document.getElementById('dd-name').textContent = user.name;
+    document.getElementById('dd-email').textContent = user.email;
+
+    // Botão admin
+    if (user.role === 'admin') {
+        document.getElementById('admin-upload-btn').style.display = 'flex';
+    }
+
+    // Badge de favoritos
+    updateFavBadge();
+}
+
+function updateFavBadge() {
+    const favs = getFavorites();
+    const badge = document.getElementById('dd-fav-badge');
+    if (favs.length > 0) {
+        badge.style.display = 'inline-block';
+        badge.textContent = favs.length;
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+function handleLogout() {
+    clearSession();
+    closeDropdown();
+    document.getElementById('auth-nav').style.display = 'flex';
+    document.getElementById('user-nav').style.display = 'none';
+    showToast('Sessão encerrada.');
+    renderMaterials(); // re-renderiza sem bloqueios de premium
+}
+
+/* ─── DROPDOWN NAV ───────────────────────────────────── */
+function toggleDropdown() {
+    const dd = document.getElementById('nav-dropdown');
+    const btn = document.getElementById('nav-avatar-btn');
+    const isOpen = dd.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+}
+function closeDropdown() {
+    document.getElementById('nav-dropdown').classList.remove('open');
+    document.getElementById('nav-avatar-btn').setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', e => {
+    if (!document.querySelector('.nav-avatar-wrap')?.contains(e.target)) closeDropdown();
+});
+
+async function handleSubscribe() {
+    if (!getToken()) { showToast('Faça login para assinar.'); toggleModal('modal-auth', 'login'); return; }
+
+    showToast('Redirecionando para o pagamento…');
+
+    /* INTEGRAÇÃO REAL MERCADO PAGO — descomente quando o servidor estiver ativo
+    try {
+        const data = await apiFetch('/subscribe', { method: 'POST' });
+        if (data.init_point) window.location.href = data.init_point;
+    } catch(err) {
+        showToast('Erro ao iniciar pagamento. Tente novamente.', 'error');
+    }
+    */
+}
+
+/* ─── FUNNEL NAVIGATION ──────────────────────────────── */
+function setProgress(n) {
+    [1, 2, 3].forEach(i => document.getElementById('ps-' + i).classList.toggle('active', i <= n));
+    const labels = { 1: 'Necessidade', 2: 'Grau de suporte', 3: 'Refinamento' };
+    document.getElementById('step-indicator').textContent = `Passo ${n} de 3`;
+    document.getElementById('step-name-label').textContent = labels[n] || '';
+}
+function hideAllSteps() { document.querySelectorAll('.filter-step').forEach(s => s.classList.remove('active')); }
+
+function selectCondition(cond) {
+    state.condition = cond; state.level = '';
+    hideAllSteps();
+    if (cond === 'autismo') { document.getElementById('step-autismo').classList.add('active'); setProgress(2); }
+    else { document.getElementById('step-final').classList.add('active'); setProgress(3); applyFilters(false); }
+}
+function selectLevel(lvl) {
+    state.level = lvl; hideAllSteps();
+    document.getElementById('step-final').classList.add('active'); setProgress(3); applyFilters(false);
+}
+function prevStep(to) {
+    hideAllSteps();
+    if (to === 1)        { document.getElementById('step-1').classList.add('active'); setProgress(1); }
+    else if (to === 'autismo') { document.getElementById('step-autismo').classList.add('active'); setProgress(2); }
+}
+function goFinalBack() { state.condition === 'autismo' ? prevStep('autismo') : prevStep(1); }
+function toggleTag(btn) { btn.classList.toggle('active'); autoFilter(); }
+function autoFilter() { applyFilters(false); }
+
+/* ─── SEARCH ─────────────────────────────────────────── */
+function handleSearch(e) { state.searchQuery = e.target.value.toLowerCase().trim(); renderMaterials(); }
+function applyFilters(scrollToResults = false) {
+    state.grade = document.getElementById('filter-grade').value;
+    state.types = [...document.querySelectorAll('.tag-btn.active')].map(b => b.textContent.trim());
+    renderMaterials();
+    if (scrollToResults) document.getElementById('materials-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ─── MATERIALS DATABASE (mock — substituir pela chamada à API) ─── */
+const MATERIALS_DB = [
+    { id: 1, emoji: '🎨', title: 'Rotina Visual com PECs', desc: 'Cartões visuais para estruturação da rotina diária com pictogramas adaptados para alunos com TEA nível 2, auxiliando a previsibilidade e a independência.', condition: 'autismo', level: '2', grade: 'fundamental', type: 'Fichas', premium: false, bg: 'linear-gradient(135deg, #D4E6F7 0%, #A8C8EC 100%)' },
+    { id: 2, emoji: '🧩', title: 'Jogo das Emoções', desc: 'Reconhecimento e expressão de sentimentos para alunos com TEA. Dinâmicas lúdicas de identificação de emoções a partir de expressões faciais.', condition: 'autismo', level: '1', grade: 'fundamental', type: 'Jogos', premium: false, bg: 'linear-gradient(135deg, #E8E4F8 0%, #CFC9F0 100%)' },
+    { id: 3, emoji: '⚡', title: 'Atividade Antiestresse', desc: 'Exercícios de regulação sensorial e foco para alunos com TDAH, com pausas ativas e técnicas de respiração para retomada da concentração.', condition: 'tdah', level: '', grade: 'fundamental', type: 'Atividades', premium: false, bg: 'linear-gradient(135deg, #FAF0E0 0%, #F0D4A0 100%)' },
+    { id: 4, emoji: '📖', title: 'Silabário Multissensorial', desc: 'Abordagem fonológica lúdica para alunos com dislexia, integrando estímulos visuais, auditivos e táteis para o desenvolvimento da consciência fonêmica.', condition: 'dislexia', level: '', grade: 'fundamental', type: 'Exercícios', premium: false, bg: 'linear-gradient(135deg, #E8E4F8 0%, #D0C8F0 100%)' },
+    { id: 5, emoji: '🌟', title: 'Projetos de Enriquecimento', desc: 'Desafios e pesquisas aprofundadas para alunos superdotados com altas habilidades. Projetos interdisciplinares de investigação e criação.', condition: 'superdotacao', level: '', grade: 'medio', type: 'Atividades', premium: true, bg: 'linear-gradient(135deg, #FAF0E0 0%, #F5D88C 100%)' },
+    { id: 6, emoji: '💛', title: 'Comunicação Aumentativa', desc: 'Prancha de CAA adaptada para alunos com Síndrome de Down, facilitando a comunicação expressiva com símbolos e vocabulário funcional.', condition: 'down', level: '', grade: 'fundamental', type: 'Fichas', premium: false, bg: 'linear-gradient(135deg, #D4E6F7 0%, #B0CCEE 100%)' },
+    { id: 7, emoji: '🎯', title: 'Foco e Sequências', desc: 'Atividades de ordenação temporal e sequências lógicas para regulação da atenção em alunos com TDAH, com suporte visual e instruções curtas.', condition: 'tdah', level: '', grade: 'medio', type: 'Exercícios', premium: true, bg: 'linear-gradient(135deg, #FAF0E0 0%, #F0D4A0 100%)' },
+    { id: 8, emoji: '🔡', title: 'Leitura com Cores', desc: 'Método de coloração fonêmica para alunos com dislexia, baseado na abordagem de Sally Shaywitz, com adaptações para o português brasileiro.', condition: 'dislexia', level: '', grade: 'medio', type: 'Fichas', premium: true, bg: 'linear-gradient(135deg, #EBE6F8 0%, #D4C8F0 100%)' },
+    { id: 9, emoji: '🤝', title: 'Habilidades Sociais', desc: 'Scripts e situações sociais para suporte leve no TEA. Cartilha de interação para o contexto escolar com role-play e historietas sociais.', condition: 'autismo', level: '1', grade: 'fundamental', type: 'Atividades', premium: false, bg: 'linear-gradient(135deg, #D4E6F7 0%, #A8C8EC 100%)' },
+    { id: 10, emoji: '🎲', title: 'Jogos de Concentração', desc: 'Jogos de memória e atenção para alunos com TDAH. Atividades progressivas que treinam memória de trabalho e sustentação da atenção.', condition: 'tdah', level: '', grade: 'infantil', type: 'Jogos', premium: false, bg: 'linear-gradient(135deg, #FAF0E0 0%, #F0D4A0 100%)' },
+    { id: 11, emoji: '📚', title: 'Adaptação de Suporte Intenso', desc: 'Materiais altamente estruturados para suporte nível 3: comunicação por troca de figuras (PECS), rotinas com antecipação e planos visuais.', condition: 'autismo', level: '3', grade: 'fundamental', type: 'Fichas', premium: true, bg: 'linear-gradient(135deg, #EBF4FC 0%, #C8DFF0 100%)' },
+    { id: 12, emoji: '🌈', title: 'Exploração Sensorial', desc: 'Atividades sensoriais para Educação Infantil inclusiva. Estimulação multissensorial para alunos com Síndrome de Down em fase de desenvolvimento.', condition: 'down', level: '', grade: 'infantil', type: 'Atividades', premium: false, bg: 'linear-gradient(135deg, #FAE8E8 0%, #F0C0C0 100%)' },
+];
+
+const gradeMap = {
+    fundamental: { label: 'Fundamental', cls: 'tag-fundamental' },
+    medio:       { label: 'Médio',        cls: 'tag-medio'       },
+    infantil:    { label: 'Infantil',     cls: 'tag-infantil'    },
+    '':          { label: 'Geral',        cls: 'tag-default'     },
+};
+
+function renderMaterials() {
+    const grid  = document.getElementById('materials-grid');
+    const count = document.getElementById('materials-count');
+    const favs  = getFavorites();
+
+    let filtered = MATERIALS_DB.filter(m => {
+        if (state.condition && state.condition !== 'todos' && m.condition !== state.condition) return false;
+        if (state.level && m.condition === 'autismo' && m.level && m.level !== state.level) return false;
+        if (state.grade && m.grade !== state.grade) return false;
+        if (state.types.length > 0 && !state.types.includes(m.type)) return false;
+        if (state.searchQuery) {
+            const q = state.searchQuery;
+            if (!m.title.toLowerCase().includes(q) && !m.desc.toLowerCase().includes(q)) return false;
+        }
+        return true;
+    });
+
+    if (!filtered.length) {
+        grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>Nenhum material encontrado. Tente ajustar os filtros ou a busca.</p></div>`;
+        count.textContent = '';
+        return;
+    }
+
+    count.textContent = `${filtered.length} material${filtered.length > 1 ? 'is' : ''} encontrado${filtered.length > 1 ? 's' : ''}`;
+
+    const gradeMap2 = { fundamental: { label: 'Fundamental', cls: 'tag-fundamental' }, medio: { label: 'Médio', cls: 'tag-medio' }, infantil: { label: 'Infantil', cls: 'tag-infantil' }, '': { label: 'Geral', cls: 'tag-default' } };
+
+    grid.innerHTML = filtered.map((m, i) => {
+        const gradeInfo = gradeMap2[m.grade] || gradeMap2[''];
+        const isFav = favs.includes(m.id);
+        return `
+        <div class="material-card" style="animation-delay:${i * 0.04}s;" onclick="openMaterial(${m.id})" role="article" tabindex="0" onkeydown="if(event.key==='Enter') openMaterial(${m.id})">
+            <div class="card-thumb" style="background:${m.bg};">
+                <div class="doc-preview"><span class="card-thumb-emoji">${m.emoji}</span></div>
+                <button class="card-fav-btn ${isFav ? 'faved' : ''}" onclick="toggleFav(event, ${m.id})" aria-label="${isFav ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}">
+                    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="card-meta">
+                    <span class="card-tag tag-default">${m.type}</span>
+                    <span class="card-tag ${gradeInfo.cls}">${gradeInfo.label}</span>
+                </div>
+                <h3 class="card-title">${m.title}</h3>
+                <p class="card-desc">${m.desc.substring(0, 80)}…</p>
+                <div class="card-footer">
+                    <span class="card-lock ${m.premium ? 'premium' : 'free'}">
+                        ${m.premium
+                            ? `<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Premium`
+                            : `<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg> Grátis`
+                        }
+                    </span>
+                    <button class="btn-card ${m.premium ? 'premium-card-btn' : ''}" onclick="event.stopPropagation(); openMaterial(${m.id})">
+                        ${m.premium ? 'Ver detalhes' : 'Acessar'}
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+/* ─── MATERIAL PREVIEW MODAL ─────────────────────────── */
+function openMaterial(id) {
+    const m = MATERIALS_DB.find(x => x.id === id);
+    if (!m) return;
+    state.currentMaterialId = id;
+
+    const favs = getFavorites();
+    const isFav = favs.includes(id);
+    const user  = getUser();
+    const isPremiumUser = user?.subscription === 'premium';
+
+    // Thumb
+    const thumb = document.getElementById('mat-preview-thumb');
+    thumb.style.background = m.bg;
+    document.getElementById('mat-preview-emoji').textContent = m.emoji;
+
+    const badge = document.getElementById('mat-preview-badge');
+    if (m.premium) {
+        badge.textContent = 'Premium';
+        badge.style.cssText = 'background:var(--amber-wash);color:var(--amber);border:1px solid var(--amber-light);';
+    } else {
+        badge.textContent = 'Grátis';
+        badge.style.cssText = 'background:var(--success-bg);color:var(--success);border:1px solid #C0E8D0;';
+    }
+
+    // Meta tags
+    const grI = gradeMap[m.grade] || gradeMap[''];
+    document.getElementById('mat-preview-meta').innerHTML = `
+        <span class="card-tag tag-default">${m.type}</span>
+        <span class="card-tag ${grI.cls}">${grI.label}</span>
+        ${m.level ? `<span class="lvl-badge lvl-${m.level}">Nível ${m.level}</span>` : ''}
+    `;
+
+    document.getElementById('mat-preview-title').textContent = m.title;
+    document.getElementById('mat-preview-desc').textContent  = m.desc;
+
+    // Info grid
+    const condMap = { autismo:'Autismo (TEA)', tdah:'TDAH', dislexia:'Dislexia', superdotacao:'Superdotação', down:'Sínd. de Down', todos:'Geral' };
+    document.getElementById('mat-preview-info').innerHTML = `
+        <div class="mat-info-item"><div class="mat-info-label">Necessidade</div><div class="mat-info-val">${condMap[m.condition] || m.condition}</div></div>
+        <div class="mat-info-item"><div class="mat-info-label">Nível Escolar</div><div class="mat-info-val">${grI.label}</div></div>
+        <div class="mat-info-item"><div class="mat-info-label">Formato</div><div class="mat-info-val">${m.type}</div></div>
+        <div class="mat-info-item"><div class="mat-info-label">Acesso</div><div class="mat-info-val">${m.premium ? 'Premium' : 'Gratuito'}</div></div>
+    `;
+
+    // Botão de acesso
+    const btnAccess = document.getElementById('mat-btn-access');
+    if (m.premium && !isPremiumUser) {
+        btnAccess.textContent = '✦ Assinar para Acessar';
+        btnAccess.style.background = 'linear-gradient(135deg, #C8892A, #E0A84A)';
+    } else if (!user) {
+        btnAccess.textContent = 'Entrar para Acessar';
+        btnAccess.style.background = '';
+    } else {
+        btnAccess.textContent = '⬇ Baixar Material';
+        btnAccess.style.background = '';
+    }
+
+    // Botão favorito
+    const btnFav = document.getElementById('mat-btn-fav');
+    btnFav.className = 'btn-fav-modal' + (isFav ? ' faved' : '');
+    btnFav.querySelector('svg').style.fill = isFav ? '#E05A5A' : 'none';
+    btnFav.childNodes[btnFav.childNodes.length - 1].textContent = isFav ? ' Favoritado' : ' Favoritar';
+
+    toggleModal('modal-material');
+}
+
+function confirmAccess() {
+    const id = state.currentMaterialId;
+    const m  = MATERIALS_DB.find(x => x.id === id);
+    const user = getUser();
+
+    if (!user) { closeModal('modal-material'); toggleModal('modal-auth', 'login'); return; }
+    if (m.premium && user.subscription !== 'premium') { closeModal('modal-material'); handleSubscribe(); return; }
+
+    addToHistory(m);
+    showToast(`Abrindo "${m.title}"… ✓`, 'success');
+    closeModal('modal-material');
+    renderMaterials();
+
+    /* DOWNLOAD REAL — quando conectado ao backend:
+    window.open(API_BASE + '/materials/' + id + '/download?token=' + getToken(), '_blank');
+    */
+}
+
+/* ─── FAVORITOS ──────────────────────────────────────── */
+function toggleFav(e, id) {
+    e.stopPropagation();
+    const user = getUser();
+    if (!user) { showToast('Faça login para favoritar materiais.'); toggleModal('modal-auth', 'login'); return; }
+
+    let favs = getFavorites();
+    const isFav = favs.includes(id);
+    if (isFav) { favs = favs.filter(f => f !== id); showToast('Removido dos favoritos'); }
+    else        { favs.push(id); showToast('Adicionado aos favoritos ❤', 'success'); }
+    saveFavorites(favs);
+    updateFavBadge();
+    renderMaterials();
+}
+
+function toggleFavFromModal() {
+    const id = state.currentMaterialId;
+    const user = getUser();
+    if (!user) { closeModal('modal-material'); toggleModal('modal-auth', 'login'); return; }
+
+    let favs = getFavorites();
+    const isFav = favs.includes(id);
+    if (isFav) { favs = favs.filter(f => f !== id); }
+    else        { favs.push(id); }
+    saveFavorites(favs);
+    updateFavBadge();
+
+    // Atualiza botão
+    const btn = document.getElementById('mat-btn-fav');
+    btn.className = 'btn-fav-modal' + (isFav ? '' : ' faved');
+    btn.querySelector('svg').style.fill = isFav ? 'none' : '#E05A5A';
+    btn.childNodes[btn.childNodes.length - 1].textContent = isFav ? ' Favoritar' : ' Favoritado';
+    showToast(isFav ? 'Removido dos favoritos' : 'Adicionado aos favoritos ❤', isFav ? '' : 'success');
+    renderMaterials();
+}
+
+/* ─── DASHBOARD ──────────────────────────────────────── */
+function openDashboard(tab) {
+    closeDropdown();
+    const user = getUser();
+    if (!user) { toggleModal('modal-auth', 'login'); return; }
+
+    // Preenche dados
+    const initials = user.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('dash-avatar').textContent = initials;
+    document.getElementById('dash-name').textContent = user.name;
+    document.getElementById('dash-email-text').textContent = user.email;
+
+    const favs    = getFavorites();
+    const history = getHistory();
+    document.getElementById('dash-fav-count').textContent  = favs.length;
+    document.getElementById('dash-hist-count').textContent = history.length;
+    document.getElementById('dash-plan-text').textContent  = user.subscription === 'premium' ? '✦ Pro' : 'Free';
+
+    // Esconde botão upgrade se já for premium
+    document.getElementById('dash-upgrade-btn').style.display = user.subscription === 'premium' ? 'none' : 'block';
+
+    // Favoritos grid
+    const favGrid = document.getElementById('fav-grid-content');
+    if (favs.length === 0) {
+        favGrid.innerHTML = `<div class="fav-empty" style="grid-column:1/-1;"><div class="fav-empty-icon">❤</div><p>Você ainda não tem favoritos.<br>Explore os materiais e salve os que gostou!</p></div>`;
+    } else {
+        const favMaterials = favs.map(id => MATERIALS_DB.find(m => m.id === id)).filter(Boolean);
+        const condMap = { autismo:'TEA', tdah:'TDAH', dislexia:'Dislexia', superdotacao:'Superdotação', down:'Down', todos:'Geral' };
+        favGrid.innerHTML = favMaterials.map(m => `
+            <div class="fav-card" onclick="closeModal('modal-dashboard'); openMaterial(${m.id});" role="button" tabindex="0">
+                <span class="fav-emoji">${m.emoji}</span>
+                <div><div class="fav-title">${m.title}</div><div class="fav-cond">${condMap[m.condition] || m.condition} · ${m.type}</div></div>
+            </div>`).join('');
+    }
+
+    // Histórico
+    const histList = document.getElementById('history-list-content');
+    if (history.length === 0) {
+        histList.innerHTML = `<div class="fav-empty"><div class="fav-empty-icon">📋</div><p>Nenhum material acessado ainda.</p></div>`;
+    } else {
+        histList.innerHTML = history.map(h => {
+            const ago = timeAgo(h.time);
+            return `<div class="history-item"><span class="history-emoji">${h.emoji}</span><div><div class="history-title">${h.title}</div><div class="history-time">${ago}</div></div></div>`;
+        }).join('');
+    }
+
+    switchDashTab(tab);
+    toggleModal('modal-dashboard');
+}
+
+function switchDashTab(tab) {
+    document.querySelectorAll('.dash-tab').forEach((t, i) => {
+        const tabs = ['perfil', 'favoritos', 'historico'];
+        t.classList.toggle('active', tabs[i] === tab);
+    });
+    document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('dash-' + tab).classList.add('active');
+}
+
+function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    const mins  = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days  = Math.floor(diff / 86400000);
+    if (mins < 2) return 'agora mesmo';
+    if (mins < 60) return `há ${mins} min`;
+    if (hours < 24) return `há ${hours}h`;
+    return `há ${days} dia${days > 1 ? 's' : ''}`;
+}
+
+/* ─── UPLOAD ADMIN ───────────────────────────────────── */
+function onDragOver(e)  { e.preventDefault(); document.getElementById('drop-zone').classList.add('dragover'); }
+function onDragLeave(e) { document.getElementById('drop-zone').classList.remove('dragover'); }
+function onDrop(e) {
+    e.preventDefault();
+    document.getElementById('drop-zone').classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) displayFileName(file.name);
+}
+function onFileSelect(e) {
+    const file = e.target.files[0];
+    if (file) displayFileName(file.name);
+}
+function displayFileName(name) {
+    const el = document.getElementById('upload-file-name');
+    el.textContent = `✓ ${name}`;
+    el.style.display = 'block';
+}
+
+async function handleUpload(e) {
+    e.preventDefault();
+    const file  = document.getElementById('file-input').files[0];
+    const title = document.getElementById('up-title').value.trim();
+    const desc  = document.getElementById('up-desc').value.trim();
+    const cond  = document.getElementById('up-condition').value;
+    const grade = document.getElementById('up-grade').value;
+    const type  = document.getElementById('up-type').value;
+    const isPrem = document.getElementById('up-premium').checked;
+
+    if (!file) { showToast('Selecione um arquivo.', 'error'); return; }
+    if (!title || !cond || !grade || !type) { showToast('Preencha todos os campos.', 'error'); return; }
+
+    const btn = document.getElementById('btn-upload');
+    btn.classList.add('loading'); btn.disabled = true;
+
+    /* INTEGRAÇÃO REAL — descomente quando o servidor estiver ativo
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('title', title);
+        formData.append('description', desc);
+        formData.append('condition', cond);
+        formData.append('gradeLevel', grade);
+        formData.append('isPremium', isPrem);
+        const res = await fetch(API_BASE + '/materials', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + getToken() },
+            body: formData
+        });
+        if (!res.ok) throw await res.json();
+        showToast('Material publicado com sucesso! ✓', 'success');
+        closeModal('modal-upload');
+        e.target.reset();
+        document.getElementById('upload-file-name').style.display = 'none';
+    } catch(err) {
+        showToast(err?.error || 'Erro ao publicar.', 'error');
+    } finally {
+        btn.classList.remove('loading'); btn.disabled = false;
+    }
+    */
+
+    // MOCK
+    await new Promise(r => setTimeout(r, 1200));
+    showToast(`"${title}" publicado com sucesso! ✓`, 'success');
+    closeModal('modal-upload');
+    e.target.reset();
+    document.getElementById('upload-file-name').style.display = 'none';
+    btn.classList.remove('loading'); btn.disabled = false;
+}
+
+/* ─── INIT ───────────────────────────────────────────── */
+(function init() {
+    const user = getUser();
+    if (user) updateNavSession(user);
+    renderMaterials();
+})();
+</script>
+</body>
+</html>
